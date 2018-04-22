@@ -1,1 +1,2 @@
-# cadeia-markov
+# Simulador da Cadeia de Markov
+

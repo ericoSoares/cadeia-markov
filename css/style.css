@@ -1,0 +1,12 @@
+body {
+  font-family: Arial;
+}
+
+#inputArea {
+  margin-top: 50px;
+  text-align: center;
+}
+
+#mostraGI, #mostraDTMC, #mostraResultados {
+  text-align: center;
+}
