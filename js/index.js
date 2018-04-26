@@ -7,6 +7,7 @@ let estados = [];
 let estadosPorcent = [];
 let seqSim;
 
+//Inicia logica do programa ao clicar no botão
 $("#calcular").click(() => {
   reset();
   estadoAtual = $("#estIni").val() || 0;
@@ -99,6 +100,7 @@ function convertDTMC() {
   console.log(dtmc);
 }
 
+//Executa a simulação conforme dados recebidos
 function simulacao(passos) {
   estados = [];
   for (let i = 0; i < dtmc.length; i++) {
@@ -125,23 +127,28 @@ function simulacao(passos) {
   console.log("Total de movimentações: " + estados.reduce(function (a, b) { return a + b; }, 0));
 }
 
+//Printa os resultados da execução na tela
 function formataMat() {
   let aux = [];
   $("#mostraResultados").html("<p align='center'><strong>Resultados da simulação:</strong></p>");
   $("#mostraResultados").append("<br><strong>DTMC:</strong><br>");
+  
   let str = "";
+
   for(let i = 0; i < dtmc.length; i++) {
     for(let j = 0; j < dtmc[i].length; j++) {
       str += dtmc[i][j].toFixed(4) + " | ";
     }
     str += "<br>";
   }
+
   $("#mostraResultados").append(str + "<br>");
   $("#mostraResultados").append("<br>Pressione <strong>[Ctrl + Shift + J]</strong> para ver mais detalhes (Chrome e Firefox)<br><br>");
   $("#mostraResultados").append("Total de saltos: <strong>" + numSaltos + "</strong><br>");
   for (let i = 0; i < estados.length; i++) {
     aux.push({ ind: i, est: estados[i] });
   }
+
   aux.sort(function (a, b) {
     if (a.est < b.est) {
       return 1;
@@ -151,15 +158,18 @@ function formataMat() {
     }
     return 0;
   });
+
   for (let i = 0; i < aux.length; i++) {
     $("#mostraResultados").append("Estado <strong>" + aux[i].ind + "</strong>: <strong>" + aux[i].est + "</strong> visitas -> <strong>" + ((aux[i].est / numSaltos) * 100).toFixed(4) + "%</strong> <br>");
   }
+
   $("#mostraResultados").append("<br><strong>Sequencia de saltos:</strong><br><br>");
   for (let i = 0; i < seqSim.length; i++) {
     $("#mostraResultados").append("Numero aleatório gerado: <strong>" + seqSim[i].num.toFixed(14) + "</strong>, foi para o estado <strong>" + seqSim[i].est + "</strong><br>");
   }
 }
 
+//Reseta todas as variáveis para nova simulação
 function reset() {
   ctmc = [];
   ctmcGI = [];
@@ -169,6 +179,7 @@ function reset() {
   seqSim = [];
 }
 
+//Verifica se CTMC inserida não contem caracteres invalidos
 function validaCTMC(mat) {
   if (mat.match(/[^(\d\|\.\s)]/g)) {
     alert("ERRO: CTMC contém caracteres inválidos!");
@@ -177,6 +188,7 @@ function validaCTMC(mat) {
   return true;
 }
 
+//Faz diversas validações quanto aos inputs
 function validaEstados() {
   if (estadoAtual > ctmc.length - 1 || estadoAtual.match(/[^(\d)]/g)) {
     alert("ERRO: Estado inicial inválido!");
