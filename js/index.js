@@ -11,8 +11,23 @@ $("#calcular").click(() => {
   reset();
   estadoAtual = $("#estIni").val() || 0;
   numSaltos = $("#qntSaltos").val() || 100;
-  if (validaCTMC()) {
-    ctmc = $("#matVal").val().split("|");
+  let auxMat = $("#matVal").val();
+  auxMat = auxMat.replace(/\,/g, ".");
+  console.log(auxMat);
+  auxMat = auxMat.split("\n");
+  auxMat = auxMat.filter((elem) => {
+    return !elem.includes("#");
+  });
+  auxMat = auxMat.filter((elem) => {
+    return elem.length != 0;
+  });
+  console.log(auxMat);
+  let numEstados = parseInt(auxMat[0]);
+  auxMat.splice(0, 1);
+  ctmc = auxMat.join("|");
+  console.log(ctmc);
+  if (validaCTMC(ctmc)) {
+    ctmc = ctmc.split("|");
     for (let i = 0; i < ctmc.length; i++) {
       ctmc[i] = ctmc[i].trim().split(" ");
     }
@@ -113,6 +128,15 @@ function simulacao(passos) {
 function formataMat() {
   let aux = [];
   $("#mostraResultados").html("<p align='center'><strong>Resultados da simulação:</strong></p>");
+  $("#mostraResultados").append("<br><strong>DTMC:</strong><br>");
+  let str = "";
+  for(let i = 0; i < dtmc.length; i++) {
+    for(let j = 0; j < dtmc[i].length; j++) {
+      str += dtmc[i][j].toFixed(4) + " | ";
+    }
+    str += "<br>";
+  }
+  $("#mostraResultados").append(str + "<br>");
   $("#mostraResultados").append("<br>Pressione <strong>[Ctrl + Shift + J]</strong> para ver mais detalhes (Chrome e Firefox)<br><br>");
   $("#mostraResultados").append("Total de saltos: <strong>" + numSaltos + "</strong><br>");
   for (let i = 0; i < estados.length; i++) {
@@ -128,7 +152,7 @@ function formataMat() {
     return 0;
   });
   for (let i = 0; i < aux.length; i++) {
-    $("#mostraResultados").append("Estado <strong>" + aux[i].ind + "</strong>: <strong>" + aux[i].est + "</strong> visitas -> <strong>" + ((aux[i].est / numSaltos) * 100).toFixed(2) + "%</strong> <br>");
+    $("#mostraResultados").append("Estado <strong>" + aux[i].ind + "</strong>: <strong>" + aux[i].est + "</strong> visitas -> <strong>" + ((aux[i].est / numSaltos) * 100).toFixed(4) + "%</strong> <br>");
   }
   $("#mostraResultados").append("<br><strong>Sequencia de saltos:</strong><br><br>");
   for (let i = 0; i < seqSim.length; i++) {
@@ -145,8 +169,8 @@ function reset() {
   seqSim = [];
 }
 
-function validaCTMC() {
-  if ($("#matVal").val().match(/[^(\d\|\.\s)]/g)) {
+function validaCTMC(mat) {
+  if (mat.match(/[^(\d\|\.\s)]/g)) {
     alert("ERRO: CTMC contém caracteres inválidos!");
     return false;
   }
